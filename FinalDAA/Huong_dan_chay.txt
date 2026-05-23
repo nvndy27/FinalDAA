@@ -1,0 +1,105 @@
+HƯỚNG DẪN CHẠY CODE BÀI TOÁN XẾP BALO ĐA CHIỀU (MULTIDIMENSIONAL KNAPSACK PROBLEM - MKP)
+Mã nguồn: Demo_DAA_GA.ipynb (Giải thuật Di truyền - GA) & Demo_DAA_HDP.ipynb (Quy hoạch động lai - HDP)
+
+I. YÊU CẦU HỆ THỐNG & MÔI TRƯỜNG CHẠY
+1. Ngôn ngữ & Môi trường:
+   - Python phiên bản từ 3.8 trở lên (khuyên dùng Python 3.10+).
+   - Có thể chạy trực tiếp trên máy cá nhân thông qua Jupyter Notebook, JupyterLab, hoặc VS Code (có cài extension Jupyter).
+   - Có thể tải và chạy trực tuyến trên Google Colab.
+
+2. Cài đặt các thư viện phụ thuộc:
+   Cài đặt các thư viện cần thiết bằng lệnh pip trong Command Prompt / Terminal hoặc trực tiếp trong cell của Notebook (thêm dấu ! ở đầu):
+   
+   pip install numpy pandas matplotlib scipy notebook
+
+   * Giải thích các thư viện:
+     - numpy: Dùng để tính toán ma trận và vector tài nguyên.
+     - pandas: Dùng để xử lý dữ liệu bảng, hiển thị bảng kết quả và xuất ra file CSV.
+     - matplotlib: Dùng để vẽ đồ thị biểu diễn sự hội tụ của thuật toán GA (chỉ dùng trong file GA).
+     - scipy: Cụ thể là hàm `scipy.optimize.linprog`, dùng để giải bài toán quy hoạch tuyến tính nới lỏng nhằm tìm các nhân tử nhân tử dual (chỉ dùng trong file HDP).
+
+3. Tải và chuẩn bị file dữ liệu đầu vào (Dataset):
+   - Chuẩn bị các file dữ liệu benchmark: mknapcb1.txt, mknapcb2.txt, ..., mknapcb9.txt.
+   - Nguồn tải dữ liệu (Download):
+     + Cách 1 (Nhanh nhất & Đầy đủ): Tải trực tiếp từ repository chứa mã nguồn và dữ liệu của dự án tại:
+       Link GitHub: https://github.com/nvndy27/FinalDAA
+       * Tải bằng dòng lệnh Git:
+         Mở Terminal hoặc Command Prompt tại thư mục muốn lưu và chạy lệnh:
+         git clone https://github.com/nvndy27/FinalDAA.git
+       * Tải thủ công bằng giao diện web:
+         Truy cập link GitHub trên -> Click vào nút xanh "Code" -> Chọn "Download ZIP" -> Tiến hành giải nén. File dữ liệu và file code sẽ nằm chung một thư mục.
+     + Cách 2 (Nguồn tham khảo gốc): Tải trực tiếp từ thư viện OR-Library của J.E. Beasley (bộ dữ liệu Chu & Beasley cho bài toán Multidimensional Knapsack Problem).
+   - Vị trí đặt file dữ liệu khi chạy:
+     + Chạy Local (Máy cá nhân): Đặt tất cả các file `mknapcb*.txt` vào CÙNG THƯ MỤC chứa ba file notebook (`Demo_DAA_GA.ipynb`, `Demo_DAA_HDP.ipynb` và `compare_hdp_ga.ipynb`).
+     + Chạy Google Colab: Upload trực tiếp các file `mknapcb*.txt` vào phân vùng `/content` ở thanh bên trái của Colab.
+
+
+II. HƯỚNG DẪN CHẠY FILE "Demo_DAA_GA.ipynb" (Giải thuật Di truyền)
+Thuật toán di truyền trong file này được tối ưu hóa với các toán tử di truyền đặc trưng kết hợp cơ chế sửa nghiệm khả thi (Repair) và thuật toán tối ưu hóa cục bộ tham lam (Improve).
+
+Các bước thực hiện:
+1. Mở file `Demo_DAA_GA.ipynb` bằng công cụ lập trình Jupyter hoặc VS Code.
+2. Kiểm tra/điều chỉnh các tham số di truyền ở Cell thứ 3 (nếu muốn thay đổi cấu hình thực nghiệm):
+   - population_size = 100  (Kích thước quần thể)
+   - generations = 300      (Số thế hệ tiến hóa tối đa)
+   - crossover_rate = 0.8   (Tỉ lệ lai ghép đồng nhất - Uniform Crossover)
+   - mutation_rate = 0.05   (Tỉ lệ đột biến đảo bit)
+   - elite_size = 5         (Số lượng cá thể tốt nhất được giữ lại trực tiếp cho thế hệ sau)
+3. Chọn "Run All" (hoặc Ctrl + Alt + Enter trên VS Code) để chạy tuần tự tất cả các cell.
+4. Đầu ra của chương trình:
+   - Trong quá trình chạy, chương trình sẽ in ra tiến trình thực nghiệm của 9 bộ test mẫu được trích xuất từ các file dữ liệu (ví dụ: Run 1/9 | mknapcb1.txt | n=100, m=5).
+   - Bảng tổng hợp kết quả chạy chi tiết bao gồm: Lợi nhuận (profit), thời gian chạy (time_sec), tính khả thi (feasible = True/False), số vật phẩm được chọn (num_items), tỉ lệ sử dụng tài nguyên (avg_usage, min_usage, max_usage).
+   - Kết quả này được tự động xuất ra file `ga_result.csv` trong cùng thư mục để phục vụ báo cáo.
+   - Biểu đồ hội tụ biểu diễn sự tăng trưởng của giá trị tối ưu qua 300 thế hệ của cả 9 lượt chạy được vẽ tự động ở cell cuối cùng.
+
+
+III. HƯỚNG DẪN CHẠY FILE "Demo_DAA_HDP.ipynb" (Quy hoạch động lai - HDP)
+Thuật toán HDP giải bài toán MKP bằng cách kết hợp nới lỏng Surrogate (giải bằng LP relaxation qua scipy), Quy hoạch động giới hạn Beam Search cho n-20 vật phẩm đầu tiên và Nhánh cận (Branch and Bound - Best-First Search) cho 20 vật phẩm cuối cùng để tìm ra nghiệm tối ưu toàn cục chính xác hoặc rất gần tối ưu.
+
+Các bước thực hiện:
+1. Mở file `Demo_DAA_HDP.ipynb`.
+2. Đảm bảo các cell định nghĩa các cấu trúc dữ liệu (`MKPInstance`, `State`) và các hàm giai đoạn (`surrogate_relaxation`, `dynamic_programming_optimized`, `branch_and_bound_optimized`) đã được chạy trước.
+3. Để giải một bộ test tùy ý trong một file dữ liệu cụ thể, sử dụng hàm:
+   
+   solve_from_uploaded_file("tên_file.txt", instance_to_solve=chỉ_số_bộ_test)
+   
+   Ví dụ ở cell 38: `solve_from_uploaded_file("mknapcb1.txt", instance_to_solve=1)`
+   (Giải bài toán số 1 trong file mknapcb1.txt).
+
+4. Chạy tuần tự tất cả các cell. Ở phần cuối của notebook đã có sẵn code để chạy thực nghiệm lần lượt trên 9 bộ test từ các file mknapcb1, cb3, cb5, cb7, cb9.
+5. Đầu ra của chương trình:
+   - Log tiến độ chạy chi tiết của các giai đoạn:
+     + Giai đoạn 1: In ra các nhân tử Lagrange dual thu được từ việc giải nới lỏng tuyến tính.
+     + Giai đoạn 2: In ra số trạng thái còn giữ lại sau mỗi bước DP nhờ Beam Search và kiểm tra tính trội.
+     + Giai đoạn 3: Số lượng nút đã duyệt trong nhánh cận và kết quả tối ưu.
+   - Danh sách các vật phẩm được chọn (in ra theo chỉ số mảng 0-based của Python và thứ tự đề bài 1-based).
+   - Tỷ lệ phần trăm tài nguyên sử dụng thực tế trên từng chiều so với sức chứa của balo.
+   - Bảng tổng hợp kết quả chạy của cả 9 bộ test được lưu tự động vào file `hdp.csv` trong cùng thư mục.
+
+IV. HƯỚNG DẪN CHẠY FILE "compare_hdp_ga.ipynb" (So sánh hiệu năng HDP và GA)
+File notebook này được sử dụng để tổng hợp và đối chiếu kết quả thực nghiệm từ hai thuật toán HDP và GA nhằm so sánh chi tiết về thời gian chạy, giá trị lợi nhuận tối ưu tìm được và mức độ sử dụng tài nguyên trung bình.
+
+Các bước thực hiện:
+1. Đảm bảo đã chạy đầy đủ cả hai notebook GA và HDP trước để tạo ra các file CSV kết quả:
+   - Chạy `Demo_DAA_GA.ipynb` sẽ sinh ra file `ga_result.csv`.
+   - Chạy `Demo_DAA_HDP.ipynb` sẽ sinh ra file `hdp.csv`.
+2. Chuẩn bị file kết quả của GA:
+   - Do file notebook so sánh mặc định đọc file `ga.csv`, bạn cần đổi tên file kết quả của GA từ `ga_result.csv` thành `ga.csv` (hoặc mở notebook so sánh, sửa dòng lệnh `pd.read_csv("ga.csv")` thành `pd.read_csv("ga_result.csv")`).
+   - Đảm bảo cả hai file `ga.csv` và `hdp.csv` nằm trong cùng một thư mục với notebook `compare_hdp_ga.ipynb`.
+3. Mở notebook `compare_hdp_ga.ipynb` và chọn "Run All" để thực thi toàn bộ các cell.
+4. Kết quả đầu ra:
+   - Bảng so sánh chi tiết hiệu năng giữa HDP và GA trên từng bộ test (bao gồm chênh lệch phần trăm lợi nhuận và tỷ số thời gian chạy).
+   - Biểu đồ chênh lệch lợi nhuận (%) được lưu tự động thành file ảnh: `profit_diff_percent_annotated.png`.
+   - Biểu đồ so sánh thời gian chạy (thang đo log) được lưu tự động thành file ảnh: `time_comparison_log_labeled.png`.
+   - Biểu đồ xu hướng sử dụng tài nguyên trung bình (%) của hai thuật toán được lưu thành file ảnh: `resource_usage_line.png`.
+
+
+V. LƯU Ý KHI KHẮC PHỤC LỖI (TROUBLESHOOTING)
+1. Lỗi "FileNotFoundError: Không tìm thấy file..." khi chạy notebook GA hoặc HDP
+   -> Hãy kiểm tra xem các file dữ liệu `mknapcb*.txt` đã được copy vào đúng thư mục hiện tại của Jupyter Notebook hay chưa. Bạn có thể sử dụng câu lệnh `import os; print(os.getcwd())` trong notebook để biết thư mục làm việc hiện tại của Python.
+2. Lỗi "FileNotFoundError: [Errno 2] No such file or directory: 'ga.csv'" khi chạy notebook so sánh
+   -> Hãy kiểm tra xem bạn đã đổi tên file `ga_result.csv` (sinh ra sau khi chạy notebook GA) thành `ga.csv` chưa, hoặc kiểm tra xem file đã nằm đúng thư mục chứa notebook so sánh chưa.
+3. Lỗi "ModuleNotFoundError: No module named 'scipy'" hoặc các thư viện khác
+   -> Bạn chưa cài đặt đủ thư viện. Hãy mở Terminal/Command Prompt trên máy và chạy lại lệnh cài đặt: `pip install numpy pandas matplotlib scipy notebook`. Nếu chạy trên Colab, hãy thêm một cell mới ở đầu và chạy: `!pip install numpy pandas matplotlib scipy`.
+4. Chạy thuật toán HDP bị chậm trên các bộ dữ liệu lớn (n=500, m=30 như cb9)
+   -> Giai đoạn 3 (Branch & Bound) được thiết lập giới hạn thời gian chạy (mặc định trong code là 600 giây). Nếu chương trình in ra "[Cảnh báo] Đã đạt giới hạn thời gian B&B" thì nghiệm thu được là nghiệm tốt nhất tìm thấy cho đến thời điểm đó (vẫn đảm bảo tính khả thi).
